@@ -1,0 +1,188 @@
+---
+title             : "Are Scientists Who Use Questionable Research Practices Stigmatized?"
+shorttitle        : "Are QRP Users Stigmatized"
+
+author: 
+  - name          : "Nicholas Fox"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "53 Avenue E, Room 429, Piscataway, NJ, 08854"
+    email         : "nwf7@psych.rutgers.edu"
+
+affiliation:
+  - id            : "1"
+    institution   : "Rutgers University"
+
+
+authornote: |
+  Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
+
+  Enter author note here.
+
+abstract: |
+  It is currently unclear if using questionable research practices (QRPs) is a stigmatizing identity within the population of psychologists.  The current work investigates the attitudes of the general population of psychologists towards QRP users.  Using a theorhetical framework of stigma, we test if their attitudes qualify QRP use as a stigmatized behavior.  Additionally, we directly observe two behaviors of QRP users associated with managing a stigmatized identity: social isolation and selection transmission of identity information.  Together we find -=SOMETHING=-
+  
+keywords          : "questionable research practices, QRPs, stigma"
+wordcount         : "X"
+
+bibliography      : ["r-references.bib"]
+
+floatsintext      : no
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+linenumbers       : no
+mask              : no
+draft             : no
+
+documentclass     : "apa6"
+classoption       : "man"
+output            : papaja::apa6_pdf
+---
+
+```{r load_packages, include = FALSE}
+options(warn = -1, digits = 3, cache = TRUE, scipen=999)
+
+#install packages - remove the hashtag if you need to install these packages, otherwise keep them hashed out.
+#install.packages("tidyverse")
+#install.packages("boot")
+#devtools::install_github("crsh/papaja")
+#devtools::install_github("crsh/papaja@devel")
+#devtools::install_github("benmarwick/wordcountaddin")
+#install.packages("rmarkdown")
+#install.packages("kableExtra")
+#install.packages("xtable")
+#install.packages("pastecs")
+
+
+#devtools::session_info()
+#pandoc_version()
+
+#load packages
+suppressWarnings(suppressPackageStartupMessages(library(tidyverse)))
+suppressWarnings(suppressPackageStartupMessages(library(boot)))
+suppressWarnings(suppressPackageStartupMessages(library(papaja)))
+suppressWarnings(suppressPackageStartupMessages(library(rmarkdown)))
+suppressWarnings(suppressPackageStartupMessages(library(kableExtra)))
+suppressWarnings(suppressPackageStartupMessages(library(xtable)))
+suppressWarnings(suppressPackageStartupMessages(library(wordcountaddin)))
+suppressWarnings(suppressPackageStartupMessages(library(pastecs)))
+
+
+```
+
+```{r read_data, echo = FALSE}
+#Load in data
+
+stigma_data <- read.csv("stigma_data.csv", header = TRUE)
+
+```
+
+```{r analysis_preferences, echo = FALSE}
+
+# Seed for random number generation
+set.seed(42)
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+
+```
+
+```{r echo = FALSE}
+
+#generate a data.frame with descriptives of the stigma_data dataset
+descriptives <- stat.desc(stigma_data, basic = F)
+
+```
+
+```{r}
+
+#generate the summary score that will be used as the DV in the regression models.
+stigma_data <- stigma_data %>% 
+  group_by(keyID) %>% 
+  mutate(stigma_DV = sum(perceive_high_stigma, would_not_let_mentor_students, sign_of_failure, think_less_of))
+
+```
+
+```{r echo = FALSE}
+#remove 'they dont care either way' choice option from the acceptibility question
+lm_acceptibility <- stigma_data %>% 
+  filter(acceptibility != 3)
+
+#linear regression of acceptibility predicting stigma, controling for demographic variables
+lm_acceptibility_model <- lm(stigma_DV ~ acceptibility + age + gender + ethnicity + politics, data = lm_norms)
+
+#output from acceptibility regression on stigma
+summary(lm_acceptibility_model)
+
+```
+
+```{r echo = FALSE}
+
+#linear regression of internal attribution (weak character) predicting stigma, controling for demographic variables
+lm_internal_model <- lm(stigma_DV ~ weak_character + age + gender + ethnicity + politics, data = lm_norms)
+
+#output from internal attribution regression on stigma
+summary(lm_internal_model)
+
+```
+
+```{r echo = FALSE}
+
+#linear regression of external attribution (due to stress) predicting stigma, controling for demographic variables
+lm_external_model <- lm(stigma_DV ~ due_to_stress + age + gender + ethnicity + politics, data = lm_norms)
+
+#output from external attribution regression on stigma
+summary(lm_external_model)
+
+```
+
+```{r echo = FALSE}
+
+#linear regression of fear (would not let mentor students) predicting stigma, controling for demographic variables
+lm_fear_model <- lm(stigma_DV ~ threat_to_students + age + gender + ethnicity + politics, data = lm_norms)
+
+#output from external attribution regression on stigma
+summary(lm_fear_model)
+
+```
+
+```{r echo = FALSE}
+
+#linear regression of income predicting stigma, controling for demographic variables
+lm_income_model <- lm(stigma_DV ~ income + age + gender + ethnicity + politics, data = lm_norms)
+
+#output from external attribution regression on stigma
+summary(lm_income_model)
+
+```
+
+# Methods
+We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
+
+## Participants
+
+## Material
+
+## Procedure
+
+## Data analysis
+We used `r cite_r("r-references.bib")` for all our analyses.
+
+
+# Results
+
+# Discussion
+
+
+\newpage
+
+# References
+```{r create_r-references}
+r_refs(file = "r-references.bib")
+```
+
+\begingroup
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+
+<div id = "refs"></div>
+\endgroup
